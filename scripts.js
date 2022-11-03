@@ -1,1 +1,105 @@
-(()=>{function e(e){let t=e.querySelector(".section__tab_active").dataset.id;const a=e.querySelectorAll(".section__tab"),r=(Array.from(a).map(e=>e.dataset.id),e.querySelector(".section__select"));function i(a){const i=e.querySelector(`.section__tab[data-id=${a}]`),n=e.querySelector(`.section__panel[data-id=${a}]`),s=e.querySelector(".section__tab_active"),c=e.querySelector(".section__panel:not(.section__panel_hidden)");t=a,s.classList.remove("section__tab_active"),s.setAttribute("aria-selected","false"),s.removeAttribute("tabindex"),i.classList.add("section__tab_active"),i.setAttribute("aria-selected","true"),i.setAttribute("tabindex","0"),i.focus({preventScroll:!0}),c.classList.add("section__panel_hidden"),c.setAttribute("aria-hidden","true"),n.classList.remove("section__panel_hidden"),n.setAttribute("aria-hidden","false"),r.value=a}var n,s,c;r.addEventListener("input",()=>{i(r.value)}),n=a,s="click",c=(e=>{i(e.target.dataset.id)}),Array.from(n).forEach(e=>{e.addEventListener(s,c)})}function t(e){let t=!1;const a=document.querySelector(".header__links");e.addEventListener("click",()=>{t=!t,e.setAttribute("aria-expanded",t?"true":"false"),e.querySelector(".header__menu-text").textContent=t?"Закрыть меню":"Открыть меню",a.classList.toggle("header__links_opened",t),a.classList.add("header__links-toggled")})}document.addEventListener("DOMContentLoaded",()=>{Array.from(document.querySelectorAll(".main__devices")).forEach(e),Array.from(document.querySelectorAll(".header__menu")).forEach(t)})})();
+(() => {
+    function bind(nodes, event, handler) {
+        Array.from(nodes).forEach(node => {
+            node.addEventListener(event, handler);
+        });
+    }
+
+    function makeTabs(node) {
+        let selected = node.querySelector('.section__tab_active').dataset.id;
+        const tabs = node.querySelectorAll('.section__tab');
+        //из всех селект кнопов получили их id 
+        const list = Array.from(tabs).map(node => node.dataset.id);
+        //получили селектор для мобилов
+        const select = node.querySelector('.section__select');
+
+        function selectTab(newId) {
+            const newTab = node.querySelector(`.section__tab[data-id=${newId}]`);
+            const newPanel = node.querySelector(`.section__panel[data-id=${newId}]`);
+            const oldTab = node.querySelector('.section__tab_active');
+            const oldPanel = node.querySelector('.section__panel:not(.section__panel_hidden)');
+
+            selected = newId;
+
+            oldTab.classList.remove('section__tab_active');
+            oldTab.setAttribute('aria-selected', 'false');
+            oldTab.removeAttribute('tabindex');
+
+            newTab.classList.add('section__tab_active');
+            newTab.setAttribute('aria-selected', 'true');
+            newTab.setAttribute('tabindex', '0');
+
+            newTab.focus({
+                preventScroll: true
+            });
+
+            oldPanel.classList.add('section__panel_hidden');
+            oldPanel.setAttribute('aria-hidden', 'true');
+            newPanel.classList.remove('section__panel_hidden');
+            newPanel.setAttribute('aria-hidden', 'false');
+
+            select.value = newId;
+        }
+
+        //вещаем на моб селектор инпут
+        select.addEventListener('input', () => {
+            selectTab(select.value);
+        });
+
+        //для десктопной
+        bind(tabs, 'click', event => {
+            const newId = event.target.dataset.id;
+            selectTab(newId);
+        });
+
+        // bind(tabs, 'keydown', event => {
+        //     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+        //         return;
+        //     }
+        //     console.log(1)
+        //     let index = list.indexOf(selected);
+        //     if (event.which === 37) {
+        //         // left
+        //         --index;
+        //     } else if (event.which === 39) {
+        //         // right
+        //         ++index;
+        //     } else if (event.which === 36) {
+        //         // home
+        //         index = 0;
+        //     } else if (event.which === 35) {
+        //         // end
+        //         index = list.length - 1;
+        //     } else {
+        //         return;
+        //     }
+
+        //     if (index >= list.length) {
+        //         index = 0;
+        //     } else if (index < 0) {
+        //         index = list.length - 1;
+        //     }
+
+        //     selectTab(list[index]);
+        //     event.preventDefault();
+        // });
+    }
+
+    function makeMenu(node) {
+        let expanded = false;
+        const links = document.querySelector('.header__links');
+
+        node.addEventListener('click', () => {
+            expanded = !expanded;
+            node.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            node.querySelector('.header__menu-text').textContent = expanded ? 'Закрыть меню' : 'Открыть меню';
+            links.classList.toggle('header__links_opened', expanded);
+            links.classList.add('header__links-toggled');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        Array.from(document.querySelectorAll('.main__devices')).forEach(makeTabs);
+        Array.from(document.querySelectorAll('.header__menu')).forEach(makeMenu);
+    });
+})();
