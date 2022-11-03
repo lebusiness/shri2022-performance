@@ -8,7 +8,9 @@
     function makeTabs(node) {
         let selected = node.querySelector('.section__tab_active').dataset.id;
         const tabs = node.querySelectorAll('.section__tab');
+        //из всех селект кнопов получили их id 
         const list = Array.from(tabs).map(node => node.dataset.id);
+        //получили селектор для мобилов
         const select = node.querySelector('.section__select');
 
         function selectTab(newId) {
@@ -22,9 +24,11 @@
             oldTab.classList.remove('section__tab_active');
             oldTab.setAttribute('aria-selected', 'false');
             oldTab.removeAttribute('tabindex');
+
             newTab.classList.add('section__tab_active');
             newTab.setAttribute('aria-selected', 'true');
             newTab.setAttribute('tabindex', '0');
+
             newTab.focus({
                 preventScroll: true
             });
@@ -37,45 +41,15 @@
             select.value = newId;
         }
 
+        //вещаем на моб селектор инпут
         select.addEventListener('input', () => {
             selectTab(select.value);
         });
 
+        //для десктопной
         bind(tabs, 'click', event => {
             const newId = event.target.dataset.id;
             selectTab(newId);
-        });
-
-        bind(tabs, 'keydown', event => {
-            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
-                return;
-            }
-
-            let index = list.indexOf(selected);
-            if (event.which === 37) {
-                // left
-                --index;
-            } else if (event.which === 39) {
-                // right
-                ++index;
-            } else if (event.which === 36) {
-                // home
-                index = 0;
-            } else if (event.which === 35) {
-                // end
-                index = list.length - 1;
-            } else {
-                return;
-            }
-
-            if (index >= list.length) {
-                index = 0;
-            } else if (index < 0) {
-                index = list.length - 1;
-            }
-
-            selectTab(list[index]);
-            event.preventDefault();
         });
     }
 
